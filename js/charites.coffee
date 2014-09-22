@@ -11,31 +11,56 @@ class Point
     @vars()
   vars:->
     @x = @o.position.x
-    @xBuff = @o.position.x
     @y = @o.position.y
-    @yBuff = @o.position.y
     @name = @o.name
     @connected = @o.connected
     @to = @o.to
+    @isFilled = @o.isFilled
 
 class Connectors
   constructor:(@o={})->
     @vars()
-    @setPoints()
-    @draw()
-    @run()
+    # @setPoints()
+    # @draw()
+    # @run()
 
   vars:->
     @canvas = document.querySelector '#js-canvas'
     @ctx = @canvas.getContext('2d')
     @width  = 1280
     @height = 900
+    @blue   = '#0387A2'
+    @img = document.querySelector '#js-img'
+    # console.log @img.height
+    @img.onload = =>
+      @ctx.drawImage @img, 0, 0
+      data = @ctx.getImageData(0,0,@width,@height)
+      @analyzeData(data)
+
+  analyzeData:(data)->
+    @points = {}
+    data = data.data
+    cnt = 0
+    for px, i in data by 4
+      isRed   = (data[i] is 255) and (data[i+1] is 0) and (data[i+2] is 0)
+      isGreen = (data[i] is 0) and (data[i+1] is 255) and (data[i+2] is 0)
+      # console.log isRed
+      if isRed
+        name = "point#{cnt++}"
+        @points[name] = new Point
+          position: x: (i/4)%1280, y: i/(1280*4)
+          isFilled: true
+          # console.log i % (@img.width)
+        #   name: name
+    @draw()
+
+    # console.log data
 
   setPoints:->
     @points = {}
 
     @xs = {}; @ys = {}
-    @sizesCnt = 50; wStep = @width/@sizesCnt; hStep = @height/@sizesCnt
+    @sizesCnt = 10; wStep = @width/@sizesCnt; hStep = @height/@sizesCnt
     for i in [0..@sizesCnt]
       @xs["#{i}"] = i*wStep
       @ys["#{i}"] = i*hStep
@@ -60,28 +85,40 @@ class Connectors
   draw:->
     @ctx.clear()
 
+
     for pointName, point of @points
       @ctx.beginPath()
-      @ctx.arc(point.x, point.y, 2, 0, 2*Math.PI, false)
-      @ctx.fillStyle = 'deeppink'
+
+      # if point.connected
+      #   points = point.connected.split ':'
+      #   for p, i in points
+      #     @ctx.moveTo point.x, point.y
+      #     to = @points[p]
+      #     @ctx.lineTo to.x, to.y
+
+      #   @ctx.strokeStyle = @blue
+      #   @ctx.stroke()
+
+      @ctx.beginPath()
+      @ctx.arc(point.x, point.y, 3, 0, 2*Math.PI, false)
+      console.log point.x, point.y
+
+      if point.isFilled
+        @ctx.fillStyle = @blue
+      else @ctx.fillStyle = '#fff'
       @ctx.fill()
-      if point.connected
-        points = point.connected.split ':'
-        for p, i in points
-          @ctx.moveTo point.x, point.y
-          to = @points[p]
-          @ctx.lineTo to.x, to.y
-
-      @ctx.lineWidth = .1
+      @ctx.strokeStyle = @blue
       @ctx.stroke()
-
       
+
 
   run:->
     it = @
     tween = new TWEEN.Tween({p:0}).to({p:1}, 5000)
       .onUpdate ->
         for pointName, point of it.points
+          point.xBuff ?= point.x
+          point.yBuff ?= point.y
           point.x = point.xBuff + (point.to.x - point.xBuff)*@p
           point.y = point.yBuff + (point.to.y - point.yBuff)*@p
         it.draw()

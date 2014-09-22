@@ -1220,3 +1220,9 @@ a,
   fill: #717171;
   cursor: pointer;
 }
+img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.05;
+}

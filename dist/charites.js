@@ -15,12 +15,11 @@ Point = (function() {
 
   Point.prototype.vars = function() {
     this.x = this.o.position.x;
-    this.xBuff = this.o.position.x;
     this.y = this.o.position.y;
-    this.yBuff = this.o.position.y;
     this.name = this.o.name;
     this.connected = this.o.connected;
-    return this.to = this.o.to;
+    this.to = this.o.to;
+    return this.isFilled = this.o.isFilled;
   };
 
   return Point;
@@ -31,16 +30,46 @@ Connectors = (function() {
   function Connectors(o) {
     this.o = o != null ? o : {};
     this.vars();
-    this.setPoints();
-    this.draw();
-    this.run();
   }
 
   Connectors.prototype.vars = function() {
     this.canvas = document.querySelector('#js-canvas');
     this.ctx = this.canvas.getContext('2d');
     this.width = 1280;
-    return this.height = 900;
+    this.height = 900;
+    this.blue = '#0387A2';
+    this.img = document.querySelector('#js-img');
+    return this.img.onload = (function(_this) {
+      return function() {
+        var data;
+        _this.ctx.drawImage(_this.img, 0, 0);
+        data = _this.ctx.getImageData(0, 0, _this.width, _this.height);
+        return _this.analyzeData(data);
+      };
+    })(this);
+  };
+
+  Connectors.prototype.analyzeData = function(data) {
+    var cnt, i, isGreen, isRed, name, px, _i, _len;
+    this.points = {};
+    data = data.data;
+    cnt = 0;
+    for (i = _i = 0, _len = data.length; _i < _len; i = _i += 4) {
+      px = data[i];
+      isRed = (data[i] === 255) && (data[i + 1] === 0) && (data[i + 2] === 0);
+      isGreen = (data[i] === 0) && (data[i + 1] === 255) && (data[i + 2] === 0);
+      if (isRed) {
+        name = "point" + (cnt++);
+        this.points[name] = new Point({
+          position: {
+            x: (i / 4) % 1280,
+            y: i / (1280 * 4)
+          },
+          isFilled: true
+        });
+      }
+    }
+    return this.draw();
   };
 
   Connectors.prototype.setPoints = function() {
@@ -48,7 +77,7 @@ Connectors = (function() {
     this.points = {};
     this.xs = {};
     this.ys = {};
-    this.sizesCnt = 50;
+    this.sizesCnt = 10;
     wStep = this.width / this.sizesCnt;
     hStep = this.height / this.sizesCnt;
     for (i = _i = 0, _ref = this.sizesCnt; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -81,26 +110,23 @@ Connectors = (function() {
   };
 
   Connectors.prototype.draw = function() {
-    var i, p, point, pointName, points, to, _i, _len, _ref, _results;
+    var point, pointName, _ref, _results;
     this.ctx.clear();
     _ref = this.points;
     _results = [];
     for (pointName in _ref) {
       point = _ref[pointName];
       this.ctx.beginPath();
-      this.ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI, false);
-      this.ctx.fillStyle = 'deeppink';
-      this.ctx.fill();
-      if (point.connected) {
-        points = point.connected.split(':');
-        for (i = _i = 0, _len = points.length; _i < _len; i = ++_i) {
-          p = points[i];
-          this.ctx.moveTo(point.x, point.y);
-          to = this.points[p];
-          this.ctx.lineTo(to.x, to.y);
-        }
+      this.ctx.beginPath();
+      this.ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI, false);
+      console.log(point.x, point.y);
+      if (point.isFilled) {
+        this.ctx.fillStyle = this.blue;
+      } else {
+        this.ctx.fillStyle = '#fff';
       }
-      this.ctx.lineWidth = .1;
+      this.ctx.fill();
+      this.ctx.strokeStyle = this.blue;
       _results.push(this.ctx.stroke());
     }
     return _results;
@@ -118,6 +144,12 @@ Connectors = (function() {
       _ref = it.points;
       for (pointName in _ref) {
         point = _ref[pointName];
+        if (point.xBuff == null) {
+          point.xBuff = point.x;
+        }
+        if (point.yBuff == null) {
+          point.yBuff = point.y;
+        }
         point.x = point.xBuff + (point.to.x - point.xBuff) * this.p;
         point.y = point.yBuff + (point.to.y - point.yBuff) * this.p;
       }
