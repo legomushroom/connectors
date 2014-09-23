@@ -45,9 +45,22 @@ class Connectors
         points = point.connected.split ':'
         for p, i in points
           @ctx.beginPath()
-          @ctx.moveTo point.x, point.y
           to = @points["point#{p}"]
+          @ctx.moveTo point.x, point.y
           @ctx.lineTo to.x, to.y
+
+          # if point.p > .15
+          #   dX = Math.abs point.to?.x-to.x
+          #   dY = Math.abs point.to?.x-to.x
+          #   isX = (dX<100) or (dX>200)
+          #   isY = (dY<100) or (dY>200)
+          #   if isX or isY
+          #     if !point.isPathEnd and !to.isPathEnd
+          #       point.connected = point.connected.replace("point#{p}", '')
+          #       point.connected = point.connected.replace("::", '')
+          #       point.name = pointName
+          #       # @addNewConnection point
+          #       # continue
 
           toX = if to.isPathEnd then to.x else to.to?.x
           if Math.abs(point.to?.x-toX) < 50
@@ -67,13 +80,39 @@ class Connectors
         @ctx.lineWidth = 1
         @ctx.stroke()
 
+  addNewConnection:(point)->
+    for pointName, p of @points
+      continue if point.name is pointName
+      continue if p.isPathEnd
+
+      isX = Math.abs(point.x-p.x) < 50 and Math.abs(point.x-p.x) > 25
+      isY = Math.abs(point.y-p.y) < 50 and Math.abs(point.y-p.y) > 25
+      if isX and isY
+        pNumber = pointName.replace('point','')
+        continue if point.connected.indexOf(pNumber) isnt -1
+
+        # if Math.abs(point.x-p.x) < 40
+        #   pre = if point.connected is '' then '' else ':'
+        #   point.connected += "#{pre}#{pNumber}"
+        break if point.connected.split(':').length > 1
+        pre = if point.connected is '' then '' else ':'
+        point.connected += "#{pre}#{pNumber}"
+
+      if Math.abs(point.x-p.x) is 0 and Math.abs(point.y-p.y) < 100
+        pNumber = pointName.replace('point','')
+        continue if point.connected.indexOf(pNumber) isnt -1
+        # continue if point.connected.split(':').length > 3
+        pre = if point.connected is '' then '' else ':'
+        point.connected += "#{pre}#{pNumber}"
+        
+
   addTo:->
     xs = {}; ys = {}
     start = 500; end = 800; delta = end - start; cnt = 5; step = delta/cnt
     for i in [0..cnt]
       xs[i] = start+ step*i
 
-    start = 100; end = 700; delta = end - start; cnt = 20; step = delta/cnt
+    start = 100; end = 700; delta = end - start; cnt = 100; step = delta/cnt
     for i in [0..cnt]
       ys[i] = start+ step*i
 
@@ -91,7 +130,8 @@ class Connectors
             minPointY = y
         point.to =
           x: minPoint
-          y: minPointY
+          y: if h.rand(0,30)is 0 then ys[h.rand(0,70)] else point.y
+          # y: minPointY
 
   run:->
     it = @

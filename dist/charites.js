@@ -61,8 +61,8 @@ Connectors = (function() {
         for (i = _i = 0, _len = points.length; _i < _len; i = ++_i) {
           p = points[i];
           this.ctx.beginPath();
-          this.ctx.moveTo(point.x, point.y);
           to = this.points["point" + p];
+          this.ctx.moveTo(point.x, point.y);
           this.ctx.lineTo(to.x, to.y);
           toX = to.isPathEnd ? to.x : (_ref1 = to.to) != null ? _ref1.x : void 0;
           if (Math.abs(((_ref2 = point.to) != null ? _ref2.x : void 0) - toX) < 50) {
@@ -89,6 +89,45 @@ Connectors = (function() {
     return _results;
   };
 
+  Connectors.prototype.addNewConnection = function(point) {
+    var isX, isY, p, pNumber, pointName, pre, _ref, _results;
+    _ref = this.points;
+    _results = [];
+    for (pointName in _ref) {
+      p = _ref[pointName];
+      if (point.name === pointName) {
+        continue;
+      }
+      if (p.isPathEnd) {
+        continue;
+      }
+      isX = Math.abs(point.x - p.x) < 50 && Math.abs(point.x - p.x) > 25;
+      isY = Math.abs(point.y - p.y) < 50 && Math.abs(point.y - p.y) > 25;
+      if (isX && isY) {
+        pNumber = pointName.replace('point', '');
+        if (point.connected.indexOf(pNumber) !== -1) {
+          continue;
+        }
+        if (point.connected.split(':').length > 1) {
+          break;
+        }
+        pre = point.connected === '' ? '' : ':';
+        point.connected += "" + pre + pNumber;
+      }
+      if (Math.abs(point.x - p.x) === 0 && Math.abs(point.y - p.y) < 100) {
+        pNumber = pointName.replace('point', '');
+        if (point.connected.indexOf(pNumber) !== -1) {
+          continue;
+        }
+        pre = point.connected === '' ? '' : ':';
+        _results.push(point.connected += "" + pre + pNumber);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
   Connectors.prototype.addTo = function() {
     var cnt, delta, end, i, min, minPoint, minPointY, point, pointName, start, step, x, xs, y, ys, _i, _j, _ref, _results;
     xs = {};
@@ -104,7 +143,7 @@ Connectors = (function() {
     start = 100;
     end = 700;
     delta = end - start;
-    cnt = 20;
+    cnt = 100;
     step = delta / cnt;
     for (i = _j = 0; 0 <= cnt ? _j <= cnt : _j >= cnt; i = 0 <= cnt ? ++_j : --_j) {
       ys[i] = start + step * i;
@@ -132,7 +171,7 @@ Connectors = (function() {
         }
         _results.push(point.to = {
           x: minPoint,
-          y: minPointY
+          y: h.rand(0, 30) === 0 ? ys[h.rand(0, 70)] : point.y
         });
       } else {
         _results.push(void 0);
