@@ -31,15 +31,20 @@ class Connectors
     @canvas = document.querySelector '#js-canvas'
     @ctx = @canvas.getContext('2d')
     @width  = 1280
-    @height = 900
+    @height = 500
     @blue   = '#0387A2'
     @points = points
   
   draw:->
     @ctx.clear()
+    @ctx.beginPath()
+    @ctx.arc(@width/2, @height/2 + 10, 75, 0, 2*Math.PI, false)
+    @ctx.lineWidth = 6
+    @ctx.strokeStyle = '#75bbc9'
+    @ctx.stroke()
+    @ctx.lineWidth = .1
 
     for pointName, point of @points
-      @ctx.beginPath()
 
       if point.connected
         points = point.connected.split ':'
@@ -48,72 +53,39 @@ class Connectors
           to = @points["point#{p}"]
           @ctx.moveTo point.x, point.y
           @ctx.lineTo to.x, to.y
-
-          # if point.p > .15
-          #   dX = Math.abs point.to?.x-to.x
-          #   dY = Math.abs point.to?.x-to.x
-          #   isX = (dX<100) or (dX>200)
-          #   isY = (dY<100) or (dY>200)
-          #   if isX or isY
-          #     if !point.isPathEnd and !to.isPathEnd
-          #       point.connected = point.connected.replace("point#{p}", '')
-          #       point.connected = point.connected.replace("::", '')
-          #       point.name = pointName
-          #       # @addNewConnection point
-          #       # continue
-
           toX = if to.isPathEnd then to.x else to.to?.x
-          if Math.abs(point.to?.x-toX) < 50
-            @ctx.lineWidth = 1
-          else @ctx.lineWidth = 1 - ((1-.25)*point.p)
+          if Math.abs(point.to?.x-toX) < 50 then @ctx.lineWidth = 1
+          else @ctx.lineWidth = 1 - ((1-.3)*point.p)
+          if pointName is 'point19'
+            @ctx.lineWidth = point.p
           @ctx.strokeStyle = @blue
           @ctx.stroke()
 
-      @ctx.beginPath()
-
       if !point.isPathEnd
+        @ctx.beginPath()
         @ctx.arc(point.x, point.y, 3, 0, 2*Math.PI, false)
-        @ctx.fillStyle = if point.isFilled then @blue
-        else @ctx.fillStyle = '#fff'
-        @ctx.fill()
         @ctx.strokeStyle = @blue
         @ctx.lineWidth = 1
         @ctx.stroke()
+        if point.isFilled
+          @ctx.fillStyle = @blue
+        else @ctx.fillStyle = '#fff'
+        @ctx.fill()
 
-  addNewConnection:(point)->
-    for pointName, p of @points
-      continue if point.name is pointName
-      continue if p.isPathEnd
+      # @ctx.fillStyle = 'rgba(0,0,0,1)'
+      # @ctx.font = '10px Arial'
+      # @ctx.fillText pointName.replace('point', ''), point.x, point.y
 
-      isX = Math.abs(point.x-p.x) < 50 and Math.abs(point.x-p.x) > 25
-      isY = Math.abs(point.y-p.y) < 50 and Math.abs(point.y-p.y) > 25
-      if isX and isY
-        pNumber = pointName.replace('point','')
-        continue if point.connected.indexOf(pNumber) isnt -1
 
-        # if Math.abs(point.x-p.x) < 40
-        #   pre = if point.connected is '' then '' else ':'
-        #   point.connected += "#{pre}#{pNumber}"
-        break if point.connected.split(':').length > 1
-        pre = if point.connected is '' then '' else ':'
-        point.connected += "#{pre}#{pNumber}"
-
-      if Math.abs(point.x-p.x) is 0 and Math.abs(point.y-p.y) < 100
-        pNumber = pointName.replace('point','')
-        continue if point.connected.indexOf(pNumber) isnt -1
-        # continue if point.connected.split(':').length > 3
-        pre = if point.connected is '' then '' else ':'
-        point.connected += "#{pre}#{pNumber}"
-        
 
   addTo:->
     xs = {}; ys = {}
-    start = 500; end = 800; delta = end - start; cnt = 5; step = delta/cnt
-    for i in [0..cnt]
+    start = 600; end = 800; delta = end - start; cnt = 3; step = delta/cnt
+    for i in [0...cnt]
       xs[i] = start+ step*i
 
-    start = 100; end = 700; delta = end - start; cnt = 100; step = delta/cnt
-    for i in [0..cnt]
+    start = 100; end = 580; delta = end - start; cnt = 20; step = delta/cnt
+    for i in [0...cnt]
       ys[i] = start+ step*i
 
     for pointName, point of @points
@@ -128,10 +100,18 @@ class Connectors
           if Math.abs(point.y-y) < min
             min = Math.abs(point.y-y)
             minPointY = y
+
+        if pointName is 'point19'
+          x = minPoint
+          y = minPointY
+        else
+          x = if h.rand(0,4) is 0 then xs[h.rand(0,3)] else  minPoint
+          y = if h.rand(0,30) is 0 then ys[h.rand(0,18)] else minPointY
         point.to =
-          x: minPoint
-          y: if h.rand(0,30)is 0 then ys[h.rand(0,70)] else point.y
+          x: x - 27
+          y: y
           # y: minPointY
+          # x: minPoint
 
   run:->
     it = @

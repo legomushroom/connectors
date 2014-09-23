@@ -43,7 +43,7 @@ Connectors = (function() {
     this.canvas = document.querySelector('#js-canvas');
     this.ctx = this.canvas.getContext('2d');
     this.width = 1280;
-    this.height = 900;
+    this.height = 500;
     this.blue = '#0387A2';
     return this.points = points;
   };
@@ -51,11 +51,16 @@ Connectors = (function() {
   Connectors.prototype.draw = function() {
     var i, p, point, pointName, to, toX, _i, _len, _ref, _ref1, _ref2, _results;
     this.ctx.clear();
+    this.ctx.beginPath();
+    this.ctx.arc(this.width / 2, this.height / 2 + 10, 75, 0, 2 * Math.PI, false);
+    this.ctx.lineWidth = 6;
+    this.ctx.strokeStyle = '#75bbc9';
+    this.ctx.stroke();
+    this.ctx.lineWidth = .1;
     _ref = this.points;
     _results = [];
     for (pointName in _ref) {
       point = _ref[pointName];
-      this.ctx.beginPath();
       if (point.connected) {
         points = point.connected.split(':');
         for (i = _i = 0, _len = points.length; _i < _len; i = ++_i) {
@@ -68,59 +73,27 @@ Connectors = (function() {
           if (Math.abs(((_ref2 = point.to) != null ? _ref2.x : void 0) - toX) < 50) {
             this.ctx.lineWidth = 1;
           } else {
-            this.ctx.lineWidth = 1 - ((1 - .25) * point.p);
+            this.ctx.lineWidth = 1 - ((1 - .3) * point.p);
+          }
+          if (pointName === 'point19') {
+            this.ctx.lineWidth = point.p;
           }
           this.ctx.strokeStyle = this.blue;
           this.ctx.stroke();
         }
       }
-      this.ctx.beginPath();
       if (!point.isPathEnd) {
+        this.ctx.beginPath();
         this.ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI, false);
-        this.ctx.fillStyle = point.isFilled ? this.blue : this.ctx.fillStyle = '#fff';
-        this.ctx.fill();
         this.ctx.strokeStyle = this.blue;
         this.ctx.lineWidth = 1;
-        _results.push(this.ctx.stroke());
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
-  };
-
-  Connectors.prototype.addNewConnection = function(point) {
-    var isX, isY, p, pNumber, pointName, pre, _ref, _results;
-    _ref = this.points;
-    _results = [];
-    for (pointName in _ref) {
-      p = _ref[pointName];
-      if (point.name === pointName) {
-        continue;
-      }
-      if (p.isPathEnd) {
-        continue;
-      }
-      isX = Math.abs(point.x - p.x) < 50 && Math.abs(point.x - p.x) > 25;
-      isY = Math.abs(point.y - p.y) < 50 && Math.abs(point.y - p.y) > 25;
-      if (isX && isY) {
-        pNumber = pointName.replace('point', '');
-        if (point.connected.indexOf(pNumber) !== -1) {
-          continue;
+        this.ctx.stroke();
+        if (point.isFilled) {
+          this.ctx.fillStyle = this.blue;
+        } else {
+          this.ctx.fillStyle = '#fff';
         }
-        if (point.connected.split(':').length > 1) {
-          break;
-        }
-        pre = point.connected === '' ? '' : ':';
-        point.connected += "" + pre + pNumber;
-      }
-      if (Math.abs(point.x - p.x) === 0 && Math.abs(point.y - p.y) < 100) {
-        pNumber = pointName.replace('point', '');
-        if (point.connected.indexOf(pNumber) !== -1) {
-          continue;
-        }
-        pre = point.connected === '' ? '' : ':';
-        _results.push(point.connected += "" + pre + pNumber);
+        _results.push(this.ctx.fill());
       } else {
         _results.push(void 0);
       }
@@ -132,20 +105,20 @@ Connectors = (function() {
     var cnt, delta, end, i, min, minPoint, minPointY, point, pointName, start, step, x, xs, y, ys, _i, _j, _ref, _results;
     xs = {};
     ys = {};
-    start = 500;
+    start = 600;
     end = 800;
     delta = end - start;
-    cnt = 5;
+    cnt = 3;
     step = delta / cnt;
-    for (i = _i = 0; 0 <= cnt ? _i <= cnt : _i >= cnt; i = 0 <= cnt ? ++_i : --_i) {
+    for (i = _i = 0; 0 <= cnt ? _i < cnt : _i > cnt; i = 0 <= cnt ? ++_i : --_i) {
       xs[i] = start + step * i;
     }
     start = 100;
-    end = 700;
+    end = 580;
     delta = end - start;
-    cnt = 100;
+    cnt = 20;
     step = delta / cnt;
-    for (i = _j = 0; 0 <= cnt ? _j <= cnt : _j >= cnt; i = 0 <= cnt ? ++_j : --_j) {
+    for (i = _j = 0; 0 <= cnt ? _j < cnt : _j > cnt; i = 0 <= cnt ? ++_j : --_j) {
       ys[i] = start + step * i;
     }
     _ref = this.points;
@@ -169,9 +142,16 @@ Connectors = (function() {
             minPointY = y;
           }
         }
+        if (pointName === 'point19') {
+          x = minPoint;
+          y = minPointY;
+        } else {
+          x = h.rand(0, 4) === 0 ? xs[h.rand(0, 3)] : minPoint;
+          y = h.rand(0, 30) === 0 ? ys[h.rand(0, 18)] : minPointY;
+        }
         _results.push(point.to = {
-          x: minPoint,
-          y: h.rand(0, 30) === 0 ? ys[h.rand(0, 70)] : point.y
+          x: x - 27,
+          y: y
         });
       } else {
         _results.push(void 0);
@@ -579,7 +559,7 @@ module.exports = {
     "y": 153.52578125,
     "isFilled": true,
     "isPathEnd": false,
-    "connected": "10"
+    "connected": "10:159"
   },
   "point20": {
     "x": 973,
@@ -1522,7 +1502,7 @@ module.exports = {
     "isPathEnd": true
   },
   "point159": {
-    "x": 622,
+    "x": 639,
     "y": 490.4859375,
     "isFilled": false,
     "isPathEnd": true

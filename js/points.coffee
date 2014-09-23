@@ -124,7 +124,7 @@ module.exports = {
     "y":153.52578125,
     "isFilled":true,
     "isPathEnd":false,
-    "connected": "10"
+    "connected": "10:159"
   },
   "point20":{
     "x":973,
@@ -1067,7 +1067,7 @@ module.exports = {
     "isPathEnd":true
   },
   "point159":{
-    "x":622,
+    "x":639,
     "y":490.4859375,
     "isFilled":false,
     "isPathEnd":true
