@@ -33,11 +33,6 @@ Connectors = (function() {
     this.o = o != null ? o : {};
     this.vars();
     this.draw();
-    setTimeout((function(_this) {
-      return function() {
-        return _this.run();
-      };
-    })(this), 1400);
   }
 
   Connectors.prototype.vars = function() {
@@ -45,8 +40,21 @@ Connectors = (function() {
     this.ctx = this.canvas.getContext('2d');
     this.width = parseInt(this.canvas.getAttribute('width'), 10);
     this.height = parseInt(this.canvas.getAttribute('height'), 10);
+    this.pw = this.width / 100;
+    this.ph = this.height / 100;
     this.blue = '#0387A2';
     return this.points = points;
+  };
+
+  Connectors.prototype.restructPoints = function() {
+    var point, pointName, _ref;
+    _ref = this.points;
+    for (pointName in _ref) {
+      point = _ref[pointName];
+      point.x = point.x / this.pw;
+      point.y = point.y / this.ph;
+    }
+    return console.log(JSON.stringify(points));
   };
 
   Connectors.prototype.draw = function() {
@@ -68,10 +76,10 @@ Connectors = (function() {
           p = points[i];
           this.ctx.beginPath();
           to = this.points["point" + p];
-          this.ctx.moveTo(point.x, point.y);
-          this.ctx.lineTo(to.x, to.y);
-          toX = to.isPathEnd ? to.x : (_ref1 = to.to) != null ? _ref1.x : void 0;
-          if (Math.abs(((_ref2 = point.to) != null ? _ref2.x : void 0) - toX) < 50) {
+          this.ctx.moveTo(point.x * this.pw, point.y * this.ph);
+          this.ctx.lineTo(to.x * this.pw, to.y * this.ph);
+          toX = to.isPathEnd ? to.x * this.pw : ((_ref1 = to.to) != null ? _ref1.x : void 0) * this.pw;
+          if (Math.abs(((_ref2 = point.to) != null ? _ref2.x : void 0) * this.pw - toX * this.pw) < 50) {
             this.ctx.lineWidth = 1;
           } else {
             this.ctx.lineWidth = 1 - ((1 - .3) * point.p);
@@ -85,7 +93,7 @@ Connectors = (function() {
       }
       if (!point.isPathEnd) {
         this.ctx.beginPath();
-        this.ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI, false);
+        this.ctx.arc(point.x * this.pw, point.y * this.ph, 3, 0, 2 * Math.PI, false);
         this.ctx.strokeStyle = this.blue;
         this.ctx.lineWidth = 1;
         this.ctx.stroke();
@@ -96,36 +104,6 @@ Connectors = (function() {
       }
     }
     return _results;
-  };
-
-  Connectors.prototype.run = function() {
-    var it, tween;
-    it = this;
-    tween = new TWEEN.Tween({
-      p: 0
-    }).to({
-      p: 1
-    }, 5000).onUpdate(function() {
-      var point, pointName, _ref;
-      _ref = it.points;
-      for (pointName in _ref) {
-        point = _ref[pointName];
-        if (!point.to) {
-          continue;
-        }
-        if (point.xBuff == null) {
-          point.xBuff = point.x;
-        }
-        if (point.yBuff == null) {
-          point.yBuff = point.y;
-        }
-        point.x = point.xBuff + (point.to.x - point.xBuff) * this.p;
-        point.y = point.yBuff + (point.to.y - point.yBuff) * this.p;
-        point.p = this.p;
-      }
-      return it.draw();
-    }).start();
-    return h.startAnimationLoop();
   };
 
   return Connectors;
@@ -373,100 +351,100 @@ module.exports = (function() {
 },{"./vendor/tween":5}],3:[function(require,module,exports){
 module.exports = {
   "point0": {
-    "x": 5,
-    "y": 100.00390625,
+    "x": 0.390625,
+    "y": 20.40896045918367,
     "isFilled": false,
     "isPathEnd": true
   },
   "point1": {
-    "x": 435,
-    "y": 107.33984375,
+    "x": 33.984375,
+    "y": 21.906090561224488,
     "isFilled": false,
     "isPathEnd": true,
     "connected": "42"
   },
   "point2": {
-    "x": 474,
-    "y": 107.3703125,
+    "x": 37.03125,
+    "y": 21.912308673469386,
     "isFilled": false,
     "isPathEnd": true,
     "connected": "43"
   },
   "point3": {
-    "x": 309,
-    "y": 108.24140625,
+    "x": 24.140625,
+    "y": 22.090082908163264,
     "isFilled": false,
     "isPathEnd": true
   },
   "point4": {
-    "x": 391,
-    "y": 108.30546875,
+    "x": 30.546875,
+    "y": 22.1031568877551,
     "isFilled": false,
     "isPathEnd": true
   },
   "point5": {
-    "x": 490,
-    "y": 108.3828125,
+    "x": 38.28125,
+    "y": 22.11894132653061,
     "isFilled": false,
     "isPathEnd": true
   },
   "point6": {
-    "x": 927,
-    "y": 109.72421875,
+    "x": 72.421875,
+    "y": 22.392697704081634,
     "isFilled": false,
     "isPathEnd": true
   },
   "point7": {
-    "x": 1137,
-    "y": 110.88828125,
+    "x": 88.828125,
+    "y": 22.630261479591837,
     "isFilled": false,
     "isPathEnd": true
   },
   "point8": {
-    "x": 945,
-    "y": 111.73828125,
+    "x": 73.828125,
+    "y": 22.803730867346935,
     "isFilled": false,
     "isPathEnd": true
   },
   "point9": {
-    "x": 797,
-    "y": 113.62265625,
+    "x": 62.265625,
+    "y": 23.18829719387755,
     "isFilled": false,
     "isPathEnd": true
   },
   "point10": {
-    "x": 753,
-    "y": 116.58828125,
+    "x": 58.828125,
+    "y": 23.79352678571428,
     "isFilled": false,
     "isPathEnd": true
   },
   "point11": {
-    "x": 4,
-    "y": 119.003125,
+    "x": 0.3125,
+    "y": 24.286352040816325,
     "isFilled": false,
     "isPathEnd": true
   },
   "point12": {
-    "x": 1013,
-    "y": 121.79140625,
+    "x": 79.140625,
+    "y": 24.85538903061224,
     "isFilled": false,
     "isPathEnd": true
   },
   "point13": {
-    "x": 1278,
-    "y": 121.9984375,
+    "x": 99.84375,
+    "y": 24.897640306122447,
     "isFilled": false,
     "isPathEnd": true
   },
   "point14": {
-    "x": 1277,
-    "y": 127.99765625,
+    "x": 99.765625,
+    "y": 26.121970663265305,
     "isFilled": false,
     "isPathEnd": true
   },
   "point15": {
-    "x": 918,
-    "y": 129.7171875,
+    "x": 71.71875,
+    "y": 26.47289540816326,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "6:8:24:25",
@@ -476,8 +454,8 @@ module.exports = {
     }
   },
   "point16": {
-    "x": 1264,
-    "y": 129.9875,
+    "x": 98.75,
+    "y": 26.528061224489797,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "13:14",
@@ -487,8 +465,8 @@ module.exports = {
     }
   },
   "point17": {
-    "x": 570,
-    "y": 142.4453125,
+    "x": 44.53125,
+    "y": 29.07047193877551,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "5:21",
@@ -498,8 +476,8 @@ module.exports = {
     }
   },
   "point18": {
-    "x": 1100,
-    "y": 145.859375,
+    "x": 85.9375,
+    "y": 29.767219387755098,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "7:20:16",
@@ -509,8 +487,8 @@ module.exports = {
     }
   },
   "point19": {
-    "x": 673,
-    "y": 153.52578125,
+    "x": 52.578125,
+    "y": 31.331792091836732,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "10:159",
@@ -520,8 +498,8 @@ module.exports = {
     }
   },
   "point20": {
-    "x": 973,
-    "y": 158.76015625,
+    "x": 76.015625,
+    "y": 32.4000318877551,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "12:24:67",
@@ -531,8 +509,8 @@ module.exports = {
     }
   },
   "point21": {
-    "x": 611,
-    "y": 160.47734375,
+    "x": 47.734375,
+    "y": 32.75047831632653,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -541,14 +519,14 @@ module.exports = {
     }
   },
   "point22": {
-    "x": 1278,
-    "y": 162.9984375,
+    "x": 99.84375,
+    "y": 33.26498724489795,
     "isFilled": false,
     "isPathEnd": true
   },
   "point23": {
-    "x": 702,
-    "y": 165.5484375,
+    "x": 54.84375,
+    "y": 33.78539540816326,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "19:34",
@@ -558,8 +536,8 @@ module.exports = {
     }
   },
   "point24": {
-    "x": 904,
-    "y": 165.70625,
+    "x": 70.625,
+    "y": 33.817602040816325,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "25:65",
@@ -569,8 +547,8 @@ module.exports = {
     }
   },
   "point25": {
-    "x": 862,
-    "y": 169.6734375,
+    "x": 67.34375,
+    "y": 34.62723214285714,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "29:46",
@@ -580,8 +558,8 @@ module.exports = {
     }
   },
   "point26": {
-    "x": 342,
-    "y": 170.2671875,
+    "x": 26.71875,
+    "y": 34.748405612244895,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "0:3:39",
@@ -591,8 +569,8 @@ module.exports = {
     }
   },
   "point27": {
-    "x": 637,
-    "y": 171.49765625,
+    "x": 49.765625,
+    "y": 34.99952168367347,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "19:21:33",
@@ -602,8 +580,8 @@ module.exports = {
     }
   },
   "point28": {
-    "x": 607,
-    "y": 172.47421875,
+    "x": 47.421875,
+    "y": 35.19882015306122,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "21:33:36:37",
@@ -613,8 +591,8 @@ module.exports = {
     }
   },
   "point29": {
-    "x": 787,
-    "y": 176.61484375,
+    "x": 61.484375,
+    "y": 36.0438456632653,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "9:38",
@@ -624,14 +602,14 @@ module.exports = {
     }
   },
   "point30": {
-    "x": 2,
-    "y": 180.0015625,
+    "x": 0.15625,
+    "y": 36.73501275510204,
     "isFilled": false,
     "isPathEnd": true
   },
   "point31": {
-    "x": 743,
-    "y": 182.58046875,
+    "x": 58.046875,
+    "y": 37.26132015306122,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "23:29:38:44",
@@ -641,8 +619,8 @@ module.exports = {
     }
   },
   "point32": {
-    "x": 649,
-    "y": 184.50703125,
+    "x": 50.703125,
+    "y": 37.65449617346939,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "19:27:33",
@@ -652,8 +630,8 @@ module.exports = {
     }
   },
   "point33": {
-    "x": 633,
-    "y": 186.49453125,
+    "x": 49.453125,
+    "y": 38.06010841836734,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -662,8 +640,8 @@ module.exports = {
     }
   },
   "point34": {
-    "x": 661,
-    "y": 187.51640625,
+    "x": 51.640625,
+    "y": 38.26865433673469,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -672,8 +650,8 @@ module.exports = {
     }
   },
   "point35": {
-    "x": 685,
-    "y": 187.53515625,
+    "x": 53.515625,
+    "y": 38.272480867346935,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "23:31:34:44",
@@ -683,8 +661,8 @@ module.exports = {
     }
   },
   "point36": {
-    "x": 587,
-    "y": 192.45859375,
+    "x": 45.859375,
+    "y": 39.277264030612244,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "17:33:43:41",
@@ -694,8 +672,8 @@ module.exports = {
     }
   },
   "point37": {
-    "x": 602,
-    "y": 195.4703125,
+    "x": 47.03125,
+    "y": 39.89190051020408,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "36:41",
@@ -705,8 +683,8 @@ module.exports = {
     }
   },
   "point38": {
-    "x": 784,
-    "y": 197.6125,
+    "x": 61.25,
+    "y": 40.32908163265306,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "52",
@@ -716,8 +694,8 @@ module.exports = {
     }
   },
   "point39": {
-    "x": 483,
-    "y": 199.37734375,
+    "x": 37.734375,
+    "y": 40.68925382653061,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "4:47",
@@ -727,14 +705,14 @@ module.exports = {
     }
   },
   "point40": {
-    "x": 1,
-    "y": 200.00078125,
+    "x": 0.078125,
+    "y": 40.81648596938775,
     "isFilled": false,
     "isPathEnd": true
   },
   "point41": {
-    "x": 591,
-    "y": 201.46171875,
+    "x": 46.171875,
+    "y": 41.11463647959183,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -743,8 +721,8 @@ module.exports = {
     }
   },
   "point42": {
-    "x": 499,
-    "y": 202.38984375,
+    "x": 38.984375,
+    "y": 41.30404974489796,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "43:71",
@@ -754,8 +732,8 @@ module.exports = {
     }
   },
   "point43": {
-    "x": 502,
-    "y": 203.3921875,
+    "x": 39.21875,
+    "y": 41.50860969387755,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -764,8 +742,8 @@ module.exports = {
     }
   },
   "point44": {
-    "x": 733,
-    "y": 203.57265625,
+    "x": 57.265625,
+    "y": 41.54544005102041,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -774,8 +752,8 @@ module.exports = {
     }
   },
   "point45": {
-    "x": 494,
-    "y": 204.3859375,
+    "x": 38.59375,
+    "y": 41.71141581632653,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -784,8 +762,8 @@ module.exports = {
     }
   },
   "point46": {
-    "x": 807,
-    "y": 207.63046875,
+    "x": 63.046875,
+    "y": 42.37356505102041,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "38:54",
@@ -795,8 +773,8 @@ module.exports = {
     }
   },
   "point47": {
-    "x": 505,
-    "y": 208.39453125,
+    "x": 39.453125,
+    "y": 42.52949617346938,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "36:56:57:77",
@@ -806,8 +784,8 @@ module.exports = {
     }
   },
   "point48": {
-    "x": 696,
-    "y": 211.54375,
+    "x": 54.375,
+    "y": 43.17219387755102,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "35",
@@ -817,8 +795,8 @@ module.exports = {
     }
   },
   "point49": {
-    "x": 1102,
-    "y": 212.8609375,
+    "x": 86.09375,
+    "y": 43.44100765306122,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "16:22",
@@ -828,8 +806,8 @@ module.exports = {
     }
   },
   "point50": {
-    "x": 563,
-    "y": 215.43984375,
+    "x": 43.984375,
+    "y": 43.96731505102041,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "36:61",
@@ -839,8 +817,8 @@ module.exports = {
     }
   },
   "point51": {
-    "x": 500,
-    "y": 216.390625,
+    "x": 39.0625,
+    "y": 44.161352040816325,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "45:47",
@@ -850,8 +828,8 @@ module.exports = {
     }
   },
   "point52": {
-    "x": 781,
-    "y": 216.61015625,
+    "x": 61.015625,
+    "y": 44.20615433673469,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "44:59",
@@ -861,8 +839,8 @@ module.exports = {
     }
   },
   "point53": {
-    "x": 368,
-    "y": 219.2875,
+    "x": 28.75,
+    "y": 44.752551020408156,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "26:42:73",
@@ -872,8 +850,8 @@ module.exports = {
     }
   },
   "point54": {
-    "x": 792,
-    "y": 219.61875,
+    "x": 61.875,
+    "y": 44.82015306122449,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "52:59:65",
@@ -883,8 +861,8 @@ module.exports = {
     }
   },
   "point55": {
-    "x": 103,
-    "y": 221.08046875,
+    "x": 8.046875,
+    "y": 45.118463010204074,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "30:40",
@@ -894,8 +872,8 @@ module.exports = {
     }
   },
   "point56": {
-    "x": 532,
-    "y": 221.415625,
+    "x": 41.5625,
+    "y": 45.18686224489796,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "50:61:69",
@@ -905,8 +883,8 @@ module.exports = {
     }
   },
   "point57": {
-    "x": 510,
-    "y": 226.3984375,
+    "x": 39.84375,
+    "y": 46.20376275510204,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "51:62:66",
@@ -916,8 +894,8 @@ module.exports = {
     }
   },
   "point58": {
-    "x": 308,
-    "y": 227.240625,
+    "x": 24.0625,
+    "y": 46.375637755102034,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "11:53:73",
@@ -927,8 +905,8 @@ module.exports = {
     }
   },
   "point59": {
-    "x": 779,
-    "y": 228.60859375,
+    "x": 60.859375,
+    "y": 46.65481505102041,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "75:96",
@@ -938,8 +916,8 @@ module.exports = {
     }
   },
   "point60": {
-    "x": 719,
-    "y": 231.56171875,
+    "x": 56.171875,
+    "y": 47.257493622448976,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "44:48",
@@ -949,8 +927,8 @@ module.exports = {
     }
   },
   "point61": {
-    "x": 570,
-    "y": 233.4453125,
+    "x": 44.53125,
+    "y": 47.64190051020408,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "74",
@@ -960,8 +938,8 @@ module.exports = {
     }
   },
   "point62": {
-    "x": 519,
-    "y": 235.40546875,
+    "x": 40.546875,
+    "y": 48.04193239795918,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "77",
@@ -971,8 +949,8 @@ module.exports = {
     }
   },
   "point63": {
-    "x": 204,
-    "y": 239.159375,
+    "x": 15.9375,
+    "y": 48.808035714285715,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "55:58:82",
@@ -982,8 +960,8 @@ module.exports = {
     }
   },
   "point64": {
-    "x": 1000,
-    "y": 240.78125,
+    "x": 78.125,
+    "y": 49.139030612244895,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "18:49:76",
@@ -993,8 +971,8 @@ module.exports = {
     }
   },
   "point65": {
-    "x": 872,
-    "y": 241.68125,
+    "x": 68.125,
+    "y": 49.32270408163265,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1003,8 +981,8 @@ module.exports = {
     }
   },
   "point66": {
-    "x": 514,
-    "y": 242.4015625,
+    "x": 40.15625,
+    "y": 49.46970663265306,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "97",
@@ -1014,8 +992,8 @@ module.exports = {
     }
   },
   "point67": {
-    "x": 880,
-    "y": 242.6875,
+    "x": 68.75,
+    "y": 49.52806122448979,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "76",
@@ -1025,8 +1003,8 @@ module.exports = {
     }
   },
   "point68": {
-    "x": 165,
-    "y": 245.12890625,
+    "x": 12.890625,
+    "y": 50.02630739795918,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "55:63:78",
@@ -1036,8 +1014,8 @@ module.exports = {
     }
   },
   "point69": {
-    "x": 550,
-    "y": 248.4296875,
+    "x": 42.96875,
+    "y": 50.69993622448979,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "61:77:74",
@@ -1047,8 +1025,8 @@ module.exports = {
     }
   },
   "point70": {
-    "x": 713,
-    "y": 251.55703125,
+    "x": 55.703125,
+    "y": 51.33816964285714,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "48:60:75:94",
@@ -1058,8 +1036,8 @@ module.exports = {
     }
   },
   "point71": {
-    "x": 547,
-    "y": 253.42734375,
+    "x": 42.734375,
+    "y": 51.71986607142857,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1068,8 +1046,8 @@ module.exports = {
     }
   },
   "point72": {
-    "x": 867,
-    "y": 253.67734375,
+    "x": 67.734375,
+    "y": 51.77088647959184,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "65:67:84:86",
@@ -1079,8 +1057,8 @@ module.exports = {
     }
   },
   "point73": {
-    "x": 387,
-    "y": 255.30234375,
+    "x": 30.234375,
+    "y": 52.10251913265306,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "82:85",
@@ -1090,8 +1068,8 @@ module.exports = {
     }
   },
   "point74": {
-    "x": 563,
-    "y": 257.43984375,
+    "x": 43.984375,
+    "y": 52.53874362244898,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "83",
@@ -1101,8 +1079,8 @@ module.exports = {
     }
   },
   "point75": {
-    "x": 733,
-    "y": 259.57265625,
+    "x": 57.265625,
+    "y": 52.97401147959184,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -1111,8 +1089,8 @@ module.exports = {
     }
   },
   "point76": {
-    "x": 934,
-    "y": 259.7296875,
+    "x": 72.96875,
+    "y": 53.00605867346938,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "84",
@@ -1122,8 +1100,8 @@ module.exports = {
     }
   },
   "point77": {
-    "x": 548,
-    "y": 264.428125,
+    "x": 42.8125,
+    "y": 53.964923469387756,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "74",
@@ -1133,8 +1111,8 @@ module.exports = {
     }
   },
   "point78": {
-    "x": 8,
-    "y": 265.00625,
+    "x": 0.625,
+    "y": 54.08290816326531,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1143,8 +1121,8 @@ module.exports = {
     }
   },
   "point79": {
-    "x": 719,
-    "y": 266.56171875,
+    "x": 56.171875,
+    "y": 54.40035076530612,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "60:70:75",
@@ -1154,8 +1132,8 @@ module.exports = {
     }
   },
   "point80": {
-    "x": 970,
-    "y": 267.7578125,
+    "x": 75.78125,
+    "y": 54.644451530612244,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "64:76:81",
@@ -1165,8 +1143,8 @@ module.exports = {
     }
   },
   "point81": {
-    "x": 984,
-    "y": 272.76875,
+    "x": 76.875,
+    "y": 55.66709183673469,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "49:122",
@@ -1176,8 +1154,8 @@ module.exports = {
     }
   },
   "point82": {
-    "x": 399,
-    "y": 278.31171875,
+    "x": 31.171875,
+    "y": 56.79830994897959,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "89",
@@ -1187,8 +1165,8 @@ module.exports = {
     }
   },
   "point83": {
-    "x": 556,
-    "y": 278.434375,
+    "x": 43.4375,
+    "y": 56.823341836734684,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "77:105",
@@ -1198,8 +1176,8 @@ module.exports = {
     }
   },
   "point84": {
-    "x": 856,
-    "y": 280.66875,
+    "x": 66.875,
+    "y": 57.27933673469387,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "86",
@@ -1209,8 +1187,8 @@ module.exports = {
     }
   },
   "point85": {
-    "x": 474,
-    "y": 286.3703125,
+    "x": 37.03125,
+    "y": 58.44292091836734,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "66:91",
@@ -1220,8 +1198,8 @@ module.exports = {
     }
   },
   "point86": {
-    "x": 831,
-    "y": 287.64921875,
+    "x": 64.921875,
+    "y": 58.703922193877546,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1230,8 +1208,8 @@ module.exports = {
     }
   },
   "point87": {
-    "x": 945,
-    "y": 291.73828125,
+    "x": 73.828125,
+    "y": 59.53842474489795,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "80",
@@ -1241,8 +1219,8 @@ module.exports = {
     }
   },
   "point88": {
-    "x": 555,
-    "y": 292.43359375,
+    "x": 43.359375,
+    "y": 59.680325255102034,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "77:83:97",
@@ -1252,8 +1230,8 @@ module.exports = {
     }
   },
   "point89": {
-    "x": 469,
-    "y": 293.36640625,
+    "x": 36.640625,
+    "y": 59.87069515306122,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "85:91",
@@ -1263,8 +1241,8 @@ module.exports = {
     }
   },
   "point90": {
-    "x": 545,
-    "y": 293.42578125,
+    "x": 42.578125,
+    "y": 59.88281249999999,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "88",
@@ -1274,8 +1252,8 @@ module.exports = {
     }
   },
   "point91": {
-    "x": 502,
-    "y": 299.3921875,
+    "x": 39.21875,
+    "y": 61.100446428571416,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "90:95",
@@ -1285,8 +1263,8 @@ module.exports = {
     }
   },
   "point92": {
-    "x": 930,
-    "y": 299.7265625,
+    "x": 72.65625,
+    "y": 61.16868622448979,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "87:108",
@@ -1296,8 +1274,8 @@ module.exports = {
     }
   },
   "point93": {
-    "x": 936,
-    "y": 299.73125,
+    "x": 73.125,
+    "y": 61.16964285714285,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "80:81:121",
@@ -1307,8 +1285,8 @@ module.exports = {
     }
   },
   "point94": {
-    "x": 706,
-    "y": 302.5515625,
+    "x": 55.15625,
+    "y": 61.745216836734684,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "79",
@@ -1318,8 +1296,8 @@ module.exports = {
     }
   },
   "point95": {
-    "x": 525,
-    "y": 304.41015625,
+    "x": 41.015625,
+    "y": 62.124521683673464,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "85",
@@ -1329,8 +1307,8 @@ module.exports = {
     }
   },
   "point96": {
-    "x": 766,
-    "y": 304.5984375,
+    "x": 59.84375,
+    "y": 62.16294642857142,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "86:98",
@@ -1340,8 +1318,8 @@ module.exports = {
     }
   },
   "point97": {
-    "x": 556,
-    "y": 309.434375,
+    "x": 43.4375,
+    "y": 63.149872448979586,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "95:105",
@@ -1351,8 +1329,8 @@ module.exports = {
     }
   },
   "point98": {
-    "x": 751,
-    "y": 309.58671875,
+    "x": 58.671875,
+    "y": 63.180963010204074,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "94",
@@ -1362,8 +1340,8 @@ module.exports = {
     }
   },
   "point99": {
-    "x": 764,
-    "y": 311.596875,
+    "x": 59.6875,
+    "y": 63.59119897959184,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1372,8 +1350,8 @@ module.exports = {
     }
   },
   "point100": {
-    "x": 417,
-    "y": 312.32578125,
+    "x": 32.578125,
+    "y": 63.73995535714285,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "82:91:109",
@@ -1383,8 +1361,8 @@ module.exports = {
     }
   },
   "point101": {
-    "x": 702,
-    "y": 312.5484375,
+    "x": 54.84375,
+    "y": 63.785395408163254,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "94:102:115:125",
@@ -1394,8 +1372,8 @@ module.exports = {
     }
   },
   "point102": {
-    "x": 737,
-    "y": 314.57578125,
+    "x": 57.578125,
+    "y": 64.19913903061223,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "79:96:103",
@@ -1405,8 +1383,8 @@ module.exports = {
     }
   },
   "point103": {
-    "x": 763,
-    "y": 315.59609375,
+    "x": 59.609375,
+    "y": 64.40736607142857,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1415,8 +1393,8 @@ module.exports = {
     }
   },
   "point104": {
-    "x": 560,
-    "y": 316.4375,
+    "x": 43.75,
+    "y": 64.57908163265306,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "95",
@@ -1426,8 +1404,8 @@ module.exports = {
     }
   },
   "point105": {
-    "x": 590,
-    "y": 316.4609375,
+    "x": 46.09375,
+    "y": 64.58386479591836,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "113",
@@ -1437,8 +1415,8 @@ module.exports = {
     }
   },
   "point106": {
-    "x": 799,
-    "y": 316.62421875,
+    "x": 62.421875,
+    "y": 64.6171875,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "86:103:107:111",
@@ -1448,8 +1426,8 @@ module.exports = {
     }
   },
   "point107": {
-    "x": 840,
-    "y": 318.65625,
+    "x": 65.625,
+    "y": 65.03188775510203,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "84:108:111",
@@ -1459,8 +1437,8 @@ module.exports = {
     }
   },
   "point108": {
-    "x": 889,
-    "y": 319.69453125,
+    "x": 69.453125,
+    "y": 65.2437818877551,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "110:118:93",
@@ -1470,8 +1448,8 @@ module.exports = {
     }
   },
   "point109": {
-    "x": 355,
-    "y": 320.27734375,
+    "x": 27.734375,
+    "y": 65.36272321428571,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "112:116:68",
@@ -1481,8 +1459,8 @@ module.exports = {
     }
   },
   "point110": {
-    "x": 914,
-    "y": 321.7140625,
+    "x": 71.40625,
+    "y": 65.65593112244898,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "87:114:120",
@@ -1492,8 +1470,8 @@ module.exports = {
     }
   },
   "point111": {
-    "x": 838,
-    "y": 322.6546875,
+    "x": 65.46875,
+    "y": 65.84789540816327,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1502,8 +1480,8 @@ module.exports = {
     }
   },
   "point112": {
-    "x": 342,
-    "y": 323.2671875,
+    "x": 26.71875,
+    "y": 65.97289540816325,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "78:123",
@@ -1513,8 +1491,8 @@ module.exports = {
     }
   },
   "point113": {
-    "x": 598,
-    "y": 325.4671875,
+    "x": 46.71875,
+    "y": 66.421875,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "119:131",
@@ -1524,8 +1502,8 @@ module.exports = {
     }
   },
   "point114": {
-    "x": 983,
-    "y": 325.76796875,
+    "x": 76.796875,
+    "y": 66.48325892857143,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "93:121:128",
@@ -1535,8 +1513,8 @@ module.exports = {
     }
   },
   "point115": {
-    "x": 671,
-    "y": 326.52421875,
+    "x": 52.421875,
+    "y": 66.6375956632653,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -1545,8 +1523,8 @@ module.exports = {
     }
   },
   "point116": {
-    "x": 370,
-    "y": 327.2890625,
+    "x": 28.90625,
+    "y": 66.79368622448979,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "112",
@@ -1556,8 +1534,8 @@ module.exports = {
     }
   },
   "point117": {
-    "x": 691,
-    "y": 327.53984375,
+    "x": 53.984375,
+    "y": 66.84486607142857,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "101:102:115",
@@ -1567,8 +1545,8 @@ module.exports = {
     }
   },
   "point118": {
-    "x": 876,
-    "y": 327.684375,
+    "x": 68.4375,
+    "y": 66.87436224489795,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1577,8 +1555,8 @@ module.exports = {
     }
   },
   "point119": {
-    "x": 613,
-    "y": 330.47890625,
+    "x": 47.890625,
+    "y": 67.44467474489795,
     "isFilled": true,
     "isPathEnd": false,
     "to": {
@@ -1587,8 +1565,8 @@ module.exports = {
     }
   },
   "point120": {
-    "x": 905,
-    "y": 331.70703125,
+    "x": 70.703125,
+    "y": 67.6953125,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "111:128",
@@ -1598,8 +1576,8 @@ module.exports = {
     }
   },
   "point121": {
-    "x": 1175,
-    "y": 334.91796875,
+    "x": 91.796875,
+    "y": 68.35060586734693,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "127",
@@ -1609,8 +1587,8 @@ module.exports = {
     }
   },
   "point122": {
-    "x": 1218,
-    "y": 335.9515625,
+    "x": 95.15625,
+    "y": 68.56154336734694,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "121:126:127",
@@ -1620,8 +1598,8 @@ module.exports = {
     }
   },
   "point123": {
-    "x": 247,
-    "y": 338.19296875,
+    "x": 19.296875,
+    "y": 69.01897321428571,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "136:137",
@@ -1631,8 +1609,8 @@ module.exports = {
     }
   },
   "point124": {
-    "x": 430,
-    "y": 338.3359375,
+    "x": 33.59375,
+    "y": 69.04815051020408,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "89:100:116",
@@ -1642,8 +1620,8 @@ module.exports = {
     }
   },
   "point125": {
-    "x": 664,
-    "y": 338.51875,
+    "x": 51.875,
+    "y": 69.08545918367346,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "119:117",
@@ -1653,14 +1631,14 @@ module.exports = {
     }
   },
   "point126": {
-    "x": 1278,
-    "y": 338.9984375,
+    "x": 99.84375,
+    "y": 69.18335459183673,
     "isFilled": false,
     "isPathEnd": true
   },
   "point127": {
-    "x": 1248,
-    "y": 345.975,
+    "x": 97.5,
+    "y": 70.60714285714286,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "130:134",
@@ -1670,8 +1648,8 @@ module.exports = {
     }
   },
   "point128": {
-    "x": 1028,
-    "y": 348.803125,
+    "x": 80.3125,
+    "y": 71.18431122448979,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "143:155",
@@ -1681,8 +1659,8 @@ module.exports = {
     }
   },
   "point129": {
-    "x": 629,
-    "y": 349.49140625,
+    "x": 49.140625,
+    "y": 71.32477678571428,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "115:117:119",
@@ -1692,14 +1670,14 @@ module.exports = {
     }
   },
   "point130": {
-    "x": 1278,
-    "y": 349.9984375,
+    "x": 99.84375,
+    "y": 71.4282525510204,
     "isFilled": false,
     "isPathEnd": true
   },
   "point131": {
-    "x": 581,
-    "y": 351.45390625,
+    "x": 45.390625,
+    "y": 71.7252869897959,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "104:129:138:139",
@@ -1709,8 +1687,8 @@ module.exports = {
     }
   },
   "point132": {
-    "x": 757,
-    "y": 352.59140625,
+    "x": 59.140625,
+    "y": 71.95742984693877,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "103:106:144",
@@ -1720,8 +1698,8 @@ module.exports = {
     }
   },
   "point133": {
-    "x": 826,
-    "y": 353.6453125,
+    "x": 64.53125,
+    "y": 72.17251275510203,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "111:118",
@@ -1731,14 +1709,14 @@ module.exports = {
     }
   },
   "point134": {
-    "x": 1278,
-    "y": 353.9984375,
+    "x": 99.84375,
+    "y": 72.24457908163265,
     "isFilled": false,
     "isPathEnd": true
   },
   "point135": {
-    "x": 438,
-    "y": 354.3421875,
+    "x": 34.21875,
+    "y": 72.31473214285714,
     "isFilled": false,
     "isPathEnd": false,
     "connected": "116:124:142",
@@ -1748,8 +1726,8 @@ module.exports = {
     }
   },
   "point136": {
-    "x": 85,
-    "y": 360.06640625,
+    "x": 6.640625,
+    "y": 73.4829400510204,
     "isFilled": false,
     "isPathEnd": false,
     "to": {
@@ -1758,14 +1736,14 @@ module.exports = {
     }
   },
   "point137": {
-    "x": 2,
-    "y": 369.0015625,
+    "x": 0.15625,
+    "y": 75.3064413265306,
     "isFilled": false,
     "isPathEnd": true
   },
   "point138": {
-    "x": 592,
-    "y": 370.4625,
+    "x": 46.25,
+    "y": 75.60459183673468,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "132:147",
@@ -1775,8 +1753,8 @@ module.exports = {
     }
   },
   "point139": {
-    "x": 568,
-    "y": 372.44375,
+    "x": 44.375,
+    "y": 76.00892857142857,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "138:145",
@@ -1786,8 +1764,8 @@ module.exports = {
     }
   },
   "point140": {
-    "x": 500,
-    "y": 380.390625,
+    "x": 39.0625,
+    "y": 77.63073979591836,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "135:139:142:145",
@@ -1797,14 +1775,14 @@ module.exports = {
     }
   },
   "point141": {
-    "x": 1278,
-    "y": 384.9984375,
+    "x": 99.84375,
+    "y": 78.57110969387755,
     "isFilled": false,
     "isPathEnd": true
   },
   "point142": {
-    "x": 454,
-    "y": 385.3546875,
+    "x": 35.46875,
+    "y": 78.6438137755102,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "148",
@@ -1814,14 +1792,14 @@ module.exports = {
     }
   },
   "point143": {
-    "x": 1278,
-    "y": 385.9984375,
+    "x": 99.84375,
+    "y": 78.77519132653062,
     "isFilled": false,
     "isPathEnd": true
   },
   "point144": {
-    "x": 751,
-    "y": 390.58671875,
+    "x": 58.671875,
+    "y": 79.71157525510203,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "133:150",
@@ -1831,8 +1809,8 @@ module.exports = {
     }
   },
   "point145": {
-    "x": 551,
-    "y": 400.43046875,
+    "x": 43.046875,
+    "y": 81.7205038265306,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "147",
@@ -1842,8 +1820,8 @@ module.exports = {
     }
   },
   "point146": {
-    "x": 685,
-    "y": 427.53515625,
+    "x": 53.515625,
+    "y": 87.25207270408163,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "132:144",
@@ -1853,8 +1831,8 @@ module.exports = {
     }
   },
   "point147": {
-    "x": 629,
-    "y": 431.49140625,
+    "x": 49.140625,
+    "y": 88.0594706632653,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "160:162",
@@ -1864,14 +1842,14 @@ module.exports = {
     }
   },
   "point148": {
-    "x": 2,
-    "y": 435.0015625,
+    "x": 0.15625,
+    "y": 88.77582908163264,
     "isFilled": false,
     "isPathEnd": true
   },
   "point149": {
-    "x": 792,
-    "y": 436.61875,
+    "x": 61.875,
+    "y": 89.10586734693877,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "120:133:162",
@@ -1881,8 +1859,8 @@ module.exports = {
     }
   },
   "point150": {
-    "x": 742,
-    "y": 456.5796875,
+    "x": 57.96875,
+    "y": 93.17952806122447,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "161",
@@ -1892,8 +1870,8 @@ module.exports = {
     }
   },
   "point151": {
-    "x": 622,
-    "y": 458.4859375,
+    "x": 48.59375,
+    "y": 93.56855867346938,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "146:158",
@@ -1903,8 +1881,8 @@ module.exports = {
     }
   },
   "point152": {
-    "x": 649,
-    "y": 463.50703125,
+    "x": 50.703125,
+    "y": 94.59327168367346,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "146:159",
@@ -1914,8 +1892,8 @@ module.exports = {
     }
   },
   "point153": {
-    "x": 504,
-    "y": 477.39375,
+    "x": 39.375,
+    "y": 97.42729591836735,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "142:145:156:157",
@@ -1925,8 +1903,8 @@ module.exports = {
     }
   },
   "point154": {
-    "x": 747,
-    "y": 478.58359375,
+    "x": 58.359375,
+    "y": 97.67012117346938,
     "isFilled": true,
     "isPathEnd": false,
     "connected": "149:161",
@@ -1936,50 +1914,50 @@ module.exports = {
     }
   },
   "point155": {
-    "x": 1278,
-    "y": 487.9984375,
+    "x": 99.84375,
+    "y": 99.59151785714286,
     "isFilled": false,
     "isPathEnd": true
   },
   "point156": {
-    "x": 510,
-    "y": 488.3984375,
+    "x": 39.84375,
+    "y": 99.67315051020408,
     "isFilled": false,
     "isPathEnd": true
   },
   "point157": {
-    "x": 498,
-    "y": 489.3890625,
+    "x": 38.90625,
+    "y": 99.87531887755102,
     "isFilled": false,
     "isPathEnd": true
   },
   "point158": {
-    "x": 559,
-    "y": 489.43671875,
+    "x": 43.671875,
+    "y": 99.88504464285714,
     "isFilled": false,
     "isPathEnd": true
   },
   "point159": {
-    "x": 639,
-    "y": 490.4859375,
+    "x": 49.921875,
+    "y": 100.09917091836734,
     "isFilled": false,
     "isPathEnd": true
   },
   "point160": {
-    "x": 666,
-    "y": 490.5203125,
+    "x": 52.03125,
+    "y": 100.10618622448979,
     "isFilled": false,
     "isPathEnd": true
   },
   "point161": {
-    "x": 736,
-    "y": 490.575,
+    "x": 57.5,
+    "y": 100.1173469387755,
     "isFilled": false,
     "isPathEnd": true
   },
   "point162": {
-    "x": 774,
-    "y": 491.6046875,
+    "x": 60.46875,
+    "y": 100.32748724489795,
     "isFilled": false,
     "isPathEnd": true
   }
